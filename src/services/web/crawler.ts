@@ -35,7 +35,7 @@ export class WebCrawler {
       includePatterns: options.includePatterns ?? [],
       timeout: options.timeout ?? 30000,
       concurrent: options.concurrent ?? 5,
-      // removeElements: [],
+      removeElement: options.removeElement ?? false,
       removeElements: [...(options.removeElements ?? []), ...DEFAULT_REMOVE_ELEMENTS],
       ignoreFragments: options.ignoreFragments ?? true,
       ignoreExtensions: [...(options.ignoreExtensions ?? []), ...DEFAULT_IGNORE_EXTENSIONS],
@@ -127,9 +127,11 @@ export class WebCrawler {
       const $ = cheerio.load(html);
       
       // Remove configured elements
-      // this.options.removeElements.forEach(selector => {
-      //   $(selector).remove();
-      // });
+      if(this.options.removeElement) {
+        this.options.removeElements.forEach(selector => {
+          $(selector).remove();
+        });
+      }
       
       const title = $('title').text().trim() || url;
       const content = $('body').html()?.trim() ?? '';
@@ -189,12 +191,13 @@ export class WebCrawler {
               depth,
             });
 
+            // Only add new links to queue if we haven't reached maxDepth
             if (depth < this.options.maxDepth) {
-              links.forEach(link => {
-                if (!this.visited.has(link)) {
+              for (const link of links) {
+                if (!this.visited.has(link) && !this.queue.some(item => item.url === link)) {
                   this.queue.push({ url: link, depth: depth + 1 });
                 }
-              });
+              }
             }
           } catch (error) {
             console.error(`Error crawling ${url}:`, error);

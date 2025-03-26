@@ -67,6 +67,8 @@ export interface CrawlerOptions {
   timeout?: number;
   /** Number of concurrent requests. Default is 5 */
   concurrent?: number;
+  /** Allow remove elements. Default false */
+  removeElement?: boolean;
   /** HTML elements to remove from content. Default includes common non-content elements */
   removeElements?: (RemoveElement | string)[];
   /** Whether to ignore URL fragments (everything after #). Default is true */
