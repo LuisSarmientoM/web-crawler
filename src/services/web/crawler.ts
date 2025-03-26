@@ -35,6 +35,7 @@ export class WebCrawler {
       includePatterns: options.includePatterns ?? [],
       timeout: options.timeout ?? 30000,
       concurrent: options.concurrent ?? 5,
+      // removeElements: [],
       removeElements: [...(options.removeElements ?? []), ...DEFAULT_REMOVE_ELEMENTS],
       ignoreFragments: options.ignoreFragments ?? true,
       ignoreExtensions: [...(options.ignoreExtensions ?? []), ...DEFAULT_IGNORE_EXTENSIONS],
@@ -126,12 +127,12 @@ export class WebCrawler {
       const $ = cheerio.load(html);
       
       // Remove configured elements
-      this.options.removeElements.forEach(selector => {
-        $(selector).remove();
-      });
+      // this.options.removeElements.forEach(selector => {
+      //   $(selector).remove();
+      // });
       
       const title = $('title').text().trim() || url;
-      const content = $('body').text().trim();
+      const content = $('body').html()?.trim() ?? '';
       
       const links = new Set<string>();
       $('a[href]').each((_, element) => {
