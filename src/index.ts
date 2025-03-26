@@ -1,61 +1,93 @@
 import { WebCrawler } from "./services/web/crawler";
+import { MarkdownConverter } from "./services/web/markdown-converter";
+import { FileStorage } from "./services/storage/file-storage";
 
 /**
- * Example implementation of the WebCrawler
- * This script demonstrates how to use the WebCrawler class to crawl a website
- * and process the results
+ * Example implementation of the web crawler and content processor
  */
 async function main() {
-  // Configure the target URL and crawler options
+  const projectName = "tuatara";
   const url = "https://tuatara.co";
 
+  // Initialize services
   const crawler = new WebCrawler(url, {
-    maxDepth: 2,        // Only crawl 2 levels deep
-    maxPages: 10,       // Limit to 10 pages
+    maxDepth: 2,
+    maxPages: 1,
     excludePatterns: [
       '/api/',
       '/login',
       '/admin',
-      '/wp-content',    // WordPress specific patterns
+      '/wp-content',
       '/wp-includes',
       '/wp-admin',
     ],
-    // Custom elements to remove (in addition to defaults)
-    removeElements: [
-      'header',
-      'footer',
-      'nav',
-      'aside',
-      '.cookie-notice',
-      '#popup-modal',
-      '.social-share',
-    ],
-    // Override default ignore extensions
     ignoreExtensions: [
       '.pdf',
       '.jpg',
       '.png',
       '.gif',
     ],
-    ignoreFragments: true,  // Ignore URLs with fragments (#)
-    concurrent: 3,          // Process 3 pages simultaneously
-    timeout: 5000,         // Timeout after 5 seconds
+    timeout: 5000,
   });
+
+  const converter = new MarkdownConverter({
+    keepLinks: true,
+    keepImages: false,
+    keepTables: true,
+    keepCodeBlocks: false,
+    removeElements: [
+      '.sidebar',
+      '.widget',
+      '.idt-widget',
+      '.comments',
+      '#idt-contact'
+    ]
+  });
+
+  const storage = new FileStorage({
+    projectName,
+    baseDir: 'data'
+  });
+
+  // Initialize storage
+  await storage.init();
 
   console.log("Starting crawler...");
   const results = await crawler.crawl();
-
-  // Process and display results
-  console.log(`Crawled ${results.length} pages:`);
-  results.forEach((result, index) => {
-    console.log(`\n[${index + 1}] ${result.url}`);
-    console.log(`Title: ${result.title}`);
-    console.log(`Content length: ${result.content.length} characters`);
-    console.log(`Found ${result.links.length} links`);
+  
+  console.log(`\nCrawled ${results.length} pages:`);
+  
+  // Process and save each page
+  for (const result of results) {
     if (result.error) {
-      console.log(`Error: ${result.error}`);
+      console.error(`Error processing ${result.url}: ${result.error}`);
+      continue;
     }
-  });
+
+    console.log(`\nProcessing: ${result.url}`);
+    
+    try {
+      // Convert to markdown with metadata
+      const markdown = converter.convert(result);
+      
+      // Save the markdown file
+      const filepath = await storage.saveMarkdownFile(result.title, markdown);
+      console.log(`Saved to: ${filepath}`);
+    } catch (error) {
+      console.error(`Error converting ${result.url}: ${error}`);
+    }
+  }
+
+  // Save the links data
+  const links = results.map(result => ({
+    url: result.url,
+    title: result.title,
+    links: result.links,
+    error: result.error
+  }));
+  
+  const linksPath = await storage.saveJsonFile('links', links);
+  console.log(`\nSaved links data to: ${linksPath}`);
 }
 
 // Handle any unhandled promise rejections
