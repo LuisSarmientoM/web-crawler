@@ -17,6 +17,38 @@
     - [ ] Generar embeddings para cada chunk
     - [ ] Guardar chunks y embeddings en archivos JSON
 
+## Tests Unitarios
+- [x] Tests para WebCrawler
+    - [x] Inicialización del constructor
+    - [x] Crawling de páginas dentro del mismo dominio
+    - [x] Respeto de maxDepth
+    - [x] Respeto de maxPages
+    - [x] Exclusión de URLs por patrón
+    - [x] Eliminación de elementos HTML
+    - [x] Manejo de errores de red
+    - [x] Manejo de HTML inválido
+    - [x] Peticiones concurrentes
+- [ ] Tests para MarkdownConverter
+    - [ ] Conversión básica de HTML a Markdown
+    - [ ] Manejo de elementos HTML específicos (headers, lists, code blocks)
+    - [ ] Limpieza de elementos innecesarios
+    - [ ] Generación de frontmatter
+    - [ ] Extracción de metadatos
+    - [ ] Manejo de errores
+- [ ] Tests para FileStorage
+    - [ ] Inicialización del proyecto
+    - [ ] Creación de directorios
+    - [ ] Sanitización de nombres de archivo
+    - [ ] Guardado de archivos Markdown
+    - [ ] Guardado de archivos JSON
+    - [ ] Manejo de errores
+- [ ] Tests para EmbeddingService (pendiente de implementar)
+    - [ ] Generación de embeddings
+    - [ ] División en chunks
+    - [ ] Guardado de embeddings
+    - [ ] Búsqueda por similitud
+    - [ ] Manejo de errores
+
 ## Generar prompt
 - [ ] Dado unos datos ingresados (lead de un cliente) extraer el contenido del mensaje y usarlo para obtener los embeddings del mensaje
 - [ ] Usando los embeddings del mensaje buscar dentro de los embeddings del proyecto cuales son los chunks que más se asemejen al mensaje del lead
@@ -36,7 +68,8 @@
 
 ## Mejoras técnicas
 - [x] Mover interfaces a archivos específicos en la carpeta types
-- [ ] Agregar tests unitarios
+- [x] Agregar tests unitarios para WebCrawler
+- [ ] Completar tests unitarios para todos los servicios
 - [ ] Implementar manejo de errores más robusto
 - [ ] Agregar logging estructurado
 - [ ] Mejorar la documentación del código
