@@ -1,121 +1,142 @@
-# MailBot
+# MailBot v0.2.0
 
-Un sistema automatizado para procesar sitios web y generar respuestas contextuales a correos electrónicos.
+A bot that processes leads and generates customized responses based on web content analysis.
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 src/
+├── index.ts              # Main entry point
+├── types/               # Type definitions
+│   ├── markdown.ts      # Markdown converter interfaces
+│   └── storage.ts       # File storage interfaces
 ├── services/
 │   ├── web/
-│   │   ├── crawler.ts       # Servicio de crawling web
-│   │   └── markdown-converter.ts  # Conversor HTML a Markdown
+│   │   ├── crawler.ts   # Web crawler implementation
+│   │   └── markdown-converter.ts # HTML to Markdown converter
 │   └── storage/
-│       └── file-storage.ts  # Manejo de almacenamiento
-├── types/
-│   ├── crawler.ts          # Tipos para el crawler
-│   └── turndown.d.ts       # Declaraciones de tipos
-└── index.ts               # Punto de entrada
+│       └── file-storage.ts # File storage service
 ```
 
-## Flujo de Procesamiento
+## Features
 
-1. **Web Crawling**
-   - Inicio desde una URL base
-   - Crawling recursivo respetando profundidad máxima
-   - Filtrado de URLs por patrones y extensiones
-   - Limpieza de elementos HTML no deseados
-   - Manejo de concurrencia y timeouts
+### Web Crawler (Completed)
+- Crawls websites starting from a given URL
+- Follows links within the same domain
+- Configurable depth and page limits
+- Filters out unwanted content and patterns
+- Handles concurrent requests efficiently
 
-2. **Procesamiento de Contenido**
-   - Extracción de contenido relevante
-   - Conversión a Markdown estructurado
-   - Preservación de elementos importantes (links, tablas)
-   - Eliminación de elementos no deseados
+### Markdown Conversion (Completed)
+- Converts HTML pages to well-structured Markdown
+- Removes unnecessary elements (headers, footers, forms)
+- Preserves important content (text, tables, code blocks)
+- Adds metadata in frontmatter format
+- Organizes content for better readability
 
-3. **Almacenamiento**
-   - Organización por proyectos
-   - Guardado de páginas en Markdown
-   - Registro de enlaces descubiertos
-   - Sanitización de nombres de archivo
+### File Storage (Completed)
+- Organizes content by project
+- Sanitizes filenames
+- Stores Markdown pages and link data
+- Creates necessary directory structure
+- Handles file operations safely
 
-## Uso
+### Content Processing (In Progress)
+- Chunk content into meaningful segments
+- Generate embeddings for semantic search
+- Store processed data for quick retrieval
+
+### Lead Processing (Planned)
+- Extract and analyze lead information
+- Match lead content with relevant stored data
+- Research company information
+- Generate customized responses
+
+## Usage
 
 ```typescript
-// Inicializar servicios
-const crawler = new WebCrawler(url, {
-  maxDepth: 2,
-  maxPages: 10,
-  excludePatterns: ['/api/', '/admin'],
-  removeElements: ['header', 'footer']
-});
+import { WebCrawler } from './services/web/crawler';
+import { MarkdownConverter } from './services/web/markdown-converter';
+import { FileStorage } from './services/storage/file-storage';
 
-const converter = new MarkdownConverter({
-  keepLinks: true,
-  keepTables: true
-});
+async function main() {
+  // Initialize services
+  const crawler = new WebCrawler({
+    maxDepth: 3,
+    maxPages: 100,
+    concurrent: 5,
+    timeout: 30000,
+    // ... other options
+  });
 
-const storage = new FileStorage({
-  projectName: 'mi-proyecto'
-});
+  const converter = new MarkdownConverter({
+    keepLinks: true,
+    keepImages: false,
+    keepTables: true,
+    keepCodeBlocks: true,
+  });
 
-// Procesar sitio
-const results = await crawler.crawl();
-for (const result of results) {
-  const markdown = converter.convert(result.content);
-  await storage.saveMarkdownFile(result.title, markdown);
+  const storage = new FileStorage({
+    projectName: 'example-project',
+  });
+
+  // Process a website
+  const url = 'https://example.com';
+  const pages = await crawler.crawl(url);
+  
+  for (const page of pages) {
+    const markdown = await converter.convert(page.html);
+    await storage.saveMarkdownFile(page.title, markdown);
+  }
+
+  // Save link data
+  await storage.saveJsonFile('links.json', crawler.getLinks());
 }
 ```
 
-## Estructura de Datos
-
-### Archivos Generados
+## Generated Data Structure
 
 ```
 data/
-└── projects/
-    └── [proyecto]/
-        ├── pages/
-        │   ├── pagina-1.md
-        │   └── pagina-2.md
-        └── links.json
+└── project-name/
+    ├── pages/
+    │   ├── page-1.md
+    │   ├── page-2.md
+    │   └── ...
+    └── links.json
 ```
 
-### Formato de Archivos
+## Configuration Options
 
-- **pages/*.md**: Contenido de páginas en Markdown
-- **links.json**: Registro de URLs y sus conexiones
+### WebCrawler
+- `maxDepth`: Maximum depth to crawl (default: 3)
+- `maxPages`: Maximum pages to process (default: 100)
+- `concurrent`: Number of concurrent requests (default: 5)
+- `timeout`: Request timeout in ms (default: 30000)
+- `excludePatterns`: URLs to exclude (array of regex)
+- `removeElements`: HTML elements to remove
+- `ignoreExtensions`: File extensions to ignore
+- `ignoreFragments`: Whether to ignore URL fragments
 
-## Configuración
+### MarkdownConverter
+- `keepLinks`: Preserve hyperlinks
+- `keepImages`: Keep image references
+- `keepTables`: Preserve table structure
+- `keepCodeBlocks`: Maintain code blocks
+- `removeElements`: Additional elements to remove
 
-### Crawler Options
-```typescript
-interface CrawlerOptions {
-  maxDepth?: number;      // Profundidad máxima
-  maxPages?: number;      // Límite de páginas
-  excludePatterns?: string[]; // Patrones a excluir
-  removeElements?: string[];  // Elementos a eliminar
-  // ...
-}
-```
+### FileStorage
+- `baseDir`: Base directory for data (optional)
+- `projectName`: Name of the project (required)
 
-### Markdown Options
-```typescript
-interface MarkdownConverterOptions {
-  keepLinks?: boolean;    // Mantener enlaces
-  keepTables?: boolean;   // Mantener tablas
-  keepImages?: boolean;   // Mantener imágenes
-  // ...
-}
-```
+## Next Steps
 
-## Próximos Pasos
+1. Implement content chunking and embeddings generation
+2. Develop lead processing and analysis
+3. Add response generation with LLM integration
+4. Set up logging and monitoring
+5. Add comprehensive test coverage
 
-- [ ] Generación de embeddings para chunks de contenido
-- [ ] Integración con LLMs para procesamiento
-- [ ] Sistema de búsqueda semántica
-- [ ] API para procesamiento de correos
+## License
 
-## Licencia
-
-MIT
+MIT License - See LICENSE file for details
