@@ -11,11 +11,49 @@
         - [x] imagenes
         - [x] links internos (#)
         - [x] elementos vacíos o sin sentido
+    - [x] corregir formato de títulos dentro de enlaces
 - [ ] Guardar todos los chunks en data/{project}/chunks.json y los embeddings generados en data/{project}/embeddings.json
     - [ ] Implementar servicio de embeddings
     - [ ] Dividir el contenido en chunks significativos
     - [ ] Generar embeddings para cada chunk
     - [ ] Guardar chunks y embeddings en archivos JSON
+
+## Interfaz Web
+- [ ] Configurar servidor web con Express/Fastify
+    - [ ] Configurar CORS y middleware necesario
+    - [ ] Implementar manejo de errores HTTP
+    - [ ] Configurar rate limiting
+- [ ] Implementar endpoints API REST
+    - [ ] POST /api/projects - Crear nuevo proyecto
+    - [ ] POST /api/projects/:projectId/crawl - Iniciar crawling
+    - [ ] GET /api/projects/:projectId/status - Obtener estado del crawling
+    - [ ] GET /api/projects/:projectId/pages - Listar páginas procesadas
+    - [ ] GET /api/projects/:projectId/chunks - Obtener chunks generados
+- [ ] Crear interfaz de usuario con Astro
+    - [ ] Configurar Astro con Tailwind CSS
+    - [ ] Crear layouts y componentes base
+        - [ ] Layout principal con navegación
+        - [ ] Componente de formulario para nueva URL
+        - [ ] Componente de progreso de crawling
+        - [ ] Componente de previsualización de páginas
+    - [ ] Implementar páginas
+        - [ ] Página principal con formulario de ingreso de URL
+        - [ ] Página de estado del crawling con progreso en tiempo real
+        - [ ] Página de listado de páginas procesadas con preview
+        - [ ] Página de visualización de chunks y embeddings
+    - [ ] Implementar islands para componentes interactivos
+        - [ ] Formulario de ingreso con validación
+        - [ ] Visualización de progreso en tiempo real
+        - [ ] Filtros y búsqueda de páginas procesadas
+    - [ ] Diseño responsive y accesible con Tailwind
+        - [ ] Sistema de colores y tema
+        - [ ] Componentes UI consistentes
+        - [ ] Diseño mobile-first
+        - [ ] Soporte para modo oscuro
+- [ ] Implementar WebSocket para actualizaciones en tiempo real
+    - [ ] Notificaciones de progreso del crawling
+    - [ ] Estado de generación de embeddings
+    - [ ] Errores y advertencias
 
 ## Tests Unitarios
 - [x] Tests para WebCrawler
@@ -28,20 +66,21 @@
     - [x] Manejo de errores de red
     - [x] Manejo de HTML inválido
     - [x] Peticiones concurrentes
-- [ ] Tests para MarkdownConverter
-    - [ ] Conversión básica de HTML a Markdown
-    - [ ] Manejo de elementos HTML específicos (headers, lists, code blocks)
-    - [ ] Limpieza de elementos innecesarios
-    - [ ] Generación de frontmatter
-    - [ ] Extracción de metadatos
-    - [ ] Manejo de errores
-- [ ] Tests para FileStorage
-    - [ ] Inicialización del proyecto
-    - [ ] Creación de directorios
-    - [ ] Sanitización de nombres de archivo
-    - [ ] Guardado de archivos Markdown
-    - [ ] Guardado de archivos JSON
-    - [ ] Manejo de errores
+- [x] Tests para MarkdownConverter
+    - [x] Conversión básica de HTML a Markdown
+    - [x] Manejo de elementos HTML específicos (headers, lists, code blocks)
+    - [x] Limpieza de elementos innecesarios
+    - [x] Generación de frontmatter
+    - [x] Extracción de metadatos
+    - [x] Manejo de errores
+    - [x] Formato correcto de títulos dentro de enlaces
+- [x] Tests para FileStorage
+    - [x] Inicialización del proyecto
+    - [x] Creación de directorios
+    - [x] Sanitización de nombres de archivo
+    - [x] Guardado de archivos Markdown
+    - [x] Guardado de archivos JSON
+    - [x] Manejo de errores
 - [ ] Tests para EmbeddingService (pendiente de implementar)
     - [ ] Generación de embeddings
     - [ ] División en chunks
@@ -69,9 +108,14 @@
 ## Mejoras técnicas
 - [x] Mover interfaces a archivos específicos en la carpeta types
 - [x] Agregar tests unitarios para WebCrawler
-- [ ] Completar tests unitarios para todos los servicios
+- [x] Completar tests unitarios para servicios existentes
 - [ ] Implementar manejo de errores más robusto
 - [ ] Agregar logging estructurado
 - [ ] Mejorar la documentación del código
 - [ ] Configurar CI/CD
 - [ ] Agregar métricas y monitoreo
+- [ ] Dockerizar la aplicación
+    - [ ] Crear Dockerfile para el backend
+    - [ ] Crear Dockerfile para el frontend
+    - [ ] Configurar docker-compose para desarrollo
+    - [ ] Configurar docker-compose para producción
