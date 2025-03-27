@@ -1,0 +1,210 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Simulamos datos de proyectos para el ejemplo
+const projects = [
+  {
+    id: 'wespe-co',
+    name: 'Wespe.co',
+    url: 'https://wespe.co',
+    pagesCount: 28,
+    chunksCount: 156,
+    lastUpdated: new Date('2023-10-15'),
+    status: 'completed',
+  },
+  {
+    id: 'acme-corp',
+    name: 'Acme Corporation',
+    url: 'https://example.com/acme',
+    pagesCount: 42,
+    chunksCount: 215,
+    lastUpdated: new Date('2023-11-05'),
+    status: 'completed',
+  },
+  {
+    id: 'tech-blog',
+    name: 'Tech Blog',
+    url: 'https://techblog.example.com',
+    pagesCount: 15,
+    chunksCount: 78,
+    lastUpdated: new Date('2023-12-10'),
+    status: 'completed',
+  },
+  {
+    id: 'shop-demo',
+    name: 'Shop Demo',
+    url: 'https://shop.example.com',
+    pagesCount: 0,
+    chunksCount: 0,
+    lastUpdated: new Date(),
+    status: 'processing',
+    progress: 45,
+  },
+];
+
+// Función auxiliar para formatear fechas
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+---
+
+<Layout title="Proyectos">
+  <div class="container py-12">
+    <div class="mb-8 flex items-center justify-between">
+      <h1 class="text-3xl font-bold">Tus Proyectos</h1>
+      <a href="/new" class="btn-primary">Nuevo Proyecto</a>
+    </div>
+    
+    <!-- Stats cards -->
+    <div class="mb-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="card">
+        <div class="flex flex-col">
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Proyectos</p>
+          <p class="text-3xl font-bold">{projects.length}</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="flex flex-col">
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Páginas Procesadas</p>
+          <p class="text-3xl font-bold">{projects.reduce((acc, p) => acc + p.pagesCount, 0)}</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="flex flex-col">
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Chunks Generados</p>
+          <p class="text-3xl font-bold">{projects.reduce((acc, p) => acc + p.chunksCount, 0)}</p>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="flex flex-col">
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Proyectos Activos</p>
+          <p class="text-3xl font-bold">{projects.filter(p => p.status === 'processing').length}</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search and filters -->
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Buscar proyectos..."
+          class="w-full rounded-lg border border-slate-300 py-2 pl-10 pr-4 focus:border-tuatara-primary focus:outline-none focus:ring-2 focus:ring-tuatara-primary/20 dark:border-slate-700 dark:bg-slate-800 sm:w-80"
+        />
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <select class="rounded-lg border border-slate-300 px-3 py-2 focus:border-tuatara-primary focus:outline-none focus:ring-2 focus:ring-tuatara-primary/20 dark:border-slate-700 dark:bg-slate-800">
+          <option value="all">Todos los estados</option>
+          <option value="completed">Completados</option>
+          <option value="processing">En proceso</option>
+          <option value="failed">Fallidos</option>
+        </select>
+        
+        <select class="rounded-lg border border-slate-300 px-3 py-2 focus:border-tuatara-primary focus:outline-none focus:ring-2 focus:ring-tuatara-primary/20 dark:border-slate-700 dark:bg-slate-800">
+          <option value="updated">Recientes primero</option>
+          <option value="name-asc">Nombre (A-Z)</option>
+          <option value="name-desc">Nombre (Z-A)</option>
+          <option value="pages">Más páginas</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- Projects Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {projects.map(project => (
+        <div class="card group flex flex-col">
+          <div class="mb-4 flex items-center justify-between">
+            <h3 class="text-xl font-bold group-hover:text-tuatara-primary">
+              <a href={`/projects/${project.id}`} class="hover:underline">
+                {project.name}
+              </a>
+            </h3>
+            
+            {project.status === 'completed' ? (
+              <span class="rounded-full bg-tuatara-primary/10 px-2.5 py-0.5 text-xs font-medium text-tuatara-primary">
+                Completado
+              </span>
+            ) : (
+              <span class="rounded-full bg-design-primary/10 px-2.5 py-0.5 text-xs font-medium text-design-primary">
+                En proceso
+              </span>
+            )}
+          </div>
+          
+          <div class="mb-4 text-sm text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              <a href={project.url} target="_blank" rel="noopener noreferrer" class="hover:text-tuatara-primary hover:underline">
+                {project.url}
+              </a>
+            </div>
+          </div>
+          
+          {project.status === 'processing' && (
+            <div class="mb-4">
+              <div class="flex items-center justify-between text-xs">
+                <span>Progreso</span>
+                <span>{project.progress}%</span>
+              </div>
+              <div class="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+                <div class="h-full bg-tuatara-primary" style={`width: ${project.progress}%`}></div>
+              </div>
+            </div>
+          )}
+          
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400">Páginas</p>
+              <p class="font-medium">{project.pagesCount}</p>
+            </div>
+            <div>
+              <p class="text-slate-500 dark:text-slate-400">Chunks</p>
+              <p class="font-medium">{project.chunksCount}</p>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex items-center justify-between pt-4 text-sm">
+            <p class="text-slate-500 dark:text-slate-400">
+              Actualizado: {formatDate(project.lastUpdated)}
+            </p>
+            
+            <div class="flex items-center gap-2">
+              <a 
+                href={`/projects/${project.id}`} 
+                class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                title="Ver detalles"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </a>
+              <button 
+                class="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+                title="Más acciones"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+      
+      <!-- New project card -->
+      <a href="/new" class="card flex flex-col items-center justify-center gap-4 border-2 border-dashed border-slate-300 hover:border-tuatara-primary hover:bg-tuatara-primary/5 dark:border-slate-700 dark:hover:border-tuatara-primary">
+        <div class="flex h-14 w-14 items-center justify-center rounded-full bg-tuatara-primary/10 text-tuatara-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+        </div>
+        <p class="font-medium">Crear nuevo proyecto</p>
+      </a>
+    </div>
+  </div>
+</Layout>

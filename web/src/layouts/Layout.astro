@@ -1,0 +1,43 @@
+---
+
+import Footer from '../components/footer.astro';
+import Header from '../components/header.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Herramienta para procesar webs y generar respuestas inteligentes" } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title} - MailBot</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="flex min-h-screen flex-col">
+      <!-- Header -->
+      <Header />
+      
+      <!-- Main content -->
+      <main class="flex-1 ">
+        <slot />
+      </main>
+      
+      <!-- Footer -->
+      <Footer />
+    </div>
+  </body>
+</html> 

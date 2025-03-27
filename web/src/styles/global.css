@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@theme {
+  /* Paleta Tuatara - Marca */
+  --color-tuatara-primary: #06bc49;
+  --color-tuatara-secondary: #75db28;
+  --color-tuatara-accent: #35dfc0;
+  --color-tuatara-dark: #1a1a1a;
+  --color-tuatara-light: #ffffff;
+
+  /* Paleta Diseño - Azules */
+  --color-design-primary: #00a0b9;
+  --color-design-secondary: #00c3d4;
+  --color-design-accent: #01d6b6;
+  --color-design-highlight: #41e1d4;
+  --color-design-light: #a1fff9;
+  --color-design-dark: #07192a;
+
+  /* Paleta Marketing - Verdes */
+  --color-marketing-primary: #00710f;
+  --color-marketing-secondary: #008551;
+  --color-marketing-accent: #00b82b;
+  --color-marketing-highlight: #35d568;
+  --color-marketing-light: #8df5ae;
+  --color-marketing-dark: #012617;
+
+  /* Paleta Desarrollo - Morados */
+  --color-development-primary: #6302a2;
+  --color-development-secondary: #8e097c;
+  --color-development-accent: #c51175;
+  --color-development-highlight: #ed41a0;
+  --color-development-light: #ff76d6;
+  --color-development-dark: #19052a;
+
+  --shadow-tuatara: var(--shadow-color) 0px -10px 20px -10px;
+
+  /* Sombras para cards */
+  --shadow-card:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-slate-50 text-slate-900 antialiased dark:bg-tuatara-dark dark:text-slate-50;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:cursor-pointer;
+}
+
+@utility container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+@utility btn-primary {
+  @apply btn bg-tuatara-primary text-tuatara-dark hover:bg-tuatara-primary/90 focus-visible:ring-tuatara-primary;
+}
+
+@utility btn-secondary {
+  @apply btn bg-tuatara-secondary text-white hover:bg-tuatara-secondary/90 focus-visible:ring-tuatara-secondary;
+}
+
+@utility btn-outline {
+  @apply btn border border-slate-300 bg-transparent hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800;
+}
+
+@utility card {
+  @apply rounded-xl bg-white p-6 shadow-card transition-shadow hover:shadow-card-hover dark:bg-slate-800;
+}
+
