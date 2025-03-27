@@ -18,7 +18,9 @@
   "author": "Luis Sarmiento",
   "license": "MIT",
   "dependencies": {
+    "cheerio": "^1.0.0",
     "jsdom": "^26.0.0",
+    "p-limit": "^6.2.0",
     "turndown": "^7.1.2",
     "turndown-plugin-gfm": "^1.0.2"
   },
