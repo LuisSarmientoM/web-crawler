@@ -207,4 +207,35 @@ describe("MarkdownConverter", () => {
     expect(result).toContain("- Item 1");
     expect(result).toContain("- Item 2");
   });
+
+  test("handles headings inside links correctly", () => {
+    const converter = new MarkdownConverter();
+    const html = `
+      <body>
+        <a href="https://example.com/page">
+          <h2>This is a heading inside a link</h2>
+        </a>
+        <a href="https://example.com/another">
+          <h3>Another heading in a link</h3>
+        </a>
+        <h2><a href="https://example.com/reverse">Heading with link inside</a></h2>
+      </body>
+    `;
+
+    const result = converter.convert({
+      content: html,
+      url: "https://example.com",
+      title: "Test Page",
+      links: [],
+      depth: 0
+    });
+
+    expect(result).toContain("## [This is a heading inside a link](https://example.com/page)");
+    expect(result).toContain("### [Another heading in a link](https://example.com/another)");
+    expect(result).toContain("## [Heading with link inside](https://example.com/reverse)");
+    
+    // Verify there are no malformed markdown patterns
+    expect(result).not.toContain("[\n\n##");
+    expect(result).not.toContain("\n\n]\n\n");
+  });
 }); 
