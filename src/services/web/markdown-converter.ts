@@ -35,6 +35,14 @@ export class MarkdownConverter {
           return content;
         }
 
+        // Check if the link contains a heading
+        const headings = element.querySelectorAll("h1, h2, h3, h4, h5, h6");
+        if (headings.length > 0) {
+          const heading = headings[0];
+          const level = parseInt(heading.tagName[1]);
+          return `\n\n${"#".repeat(level)} [${content}](${href})\n\n`;
+        }
+
         return `[${content}](${href})`;
       },
     });
@@ -44,6 +52,10 @@ export class MarkdownConverter {
       filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
       replacement: (content, node) => {
         const element = node as HTMLElement;
+        // If the heading is inside a link, let the link rule handle it
+        if (element.closest("a")) {
+          return content;
+        }
         const level = parseInt(element.tagName[1]);
         return `\n\n${"#".repeat(level)} ${content}\n\n`;
       },
